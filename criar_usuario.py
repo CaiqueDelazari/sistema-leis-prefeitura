@@ -36,8 +36,8 @@ def main():
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO usuarios (username, password_hash, is_admin) VALUES (%s, %s, %s)",
-        (username, password_hash, is_admin),
+        "INSERT INTO usuarios (username, password_hash, is_admin) VALUES (?, ?, ?)",
+        (username, password_hash, 1 if is_admin else 0),
     )
     conn.commit()
     cursor.close()

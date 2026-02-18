@@ -7,6 +7,15 @@ CREATE TABLE IF NOT EXISTS leis (
     data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS atos (
+    id SERIAL PRIMARY KEY,
+    secao TEXT NOT NULL,
+    subsecao TEXT NOT NULL,
+    nome_lei TEXT NOT NULL,
+    descricao_previa TEXT,
+    data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS usuarios (
     id SERIAL PRIMARY KEY,
     username VARCHAR(100) UNIQUE NOT NULL,

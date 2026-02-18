@@ -32,7 +32,7 @@ def buscar_usuario_por_username(username: str) -> Optional[Dict[str, Any]]:
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT id, username, password_hash, is_admin FROM usuarios WHERE username = %s",
+        "SELECT id, username, password_hash, is_admin FROM usuarios WHERE username = ?",
         (username,),
     )
     row = cursor.fetchone()
@@ -83,8 +83,8 @@ def criar_usuario(
     cursor = conn.cursor()
     try:
         cursor.execute(
-            "INSERT INTO usuarios (username, password_hash, is_admin) VALUES (%s, %s, %s)",
-            (username, password_hash, is_admin),
+            "INSERT INTO usuarios (username, password_hash, is_admin) VALUES (?, ?, ?)",
+            (username, password_hash, 1 if is_admin else 0),
         )
         conn.commit()
     except Exception:
