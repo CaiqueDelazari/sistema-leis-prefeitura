@@ -6,28 +6,33 @@ from app.routes.auth_routes import login_obrigatorio
 lei_bp = Blueprint("lei", __name__)
 
 
-@lei_bp.route("/", methods=["GET", "POST"])
+@lei_bp.route("/atos", methods=["GET", "POST"])
 @login_obrigatorio
 def atos():
     if request.method == "POST":
-        secao = request.form.get("secao", "").strip()
-        subsecao = request.form.get("subsecao", "").strip()
-        nome_lei = request.form.get("nome_lei", "").strip()
-        descricao_previa = request.form.get("descricao_previa", "").strip()
+        secao = (request.form.get("secao") or "").strip()
+        subsecao = (request.form.get("subsecao") or "").strip() or "Nenhuma"
+        nome_lei = (request.form.get("nome_lei") or "").strip()
+        descricao_previa = (request.form.get("descricao_previa") or "").strip()
 
-        if not secao or not subsecao or not nome_lei:
-            flash("Seção, subseção e nome/número da lei são obrigatórios.", "erro")
+        if not secao or not nome_lei:
+            flash("Seção e nome/número da lei são obrigatórios.", "erro")
             return render_template("atos.html")
 
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO atos (secao, subsecao, nome_lei, descricao_previa) VALUES (?, ?, ?, ?)",
-            (secao, subsecao, nome_lei, descricao_previa),
-        )
-        conn.commit()
-        cursor.close()
-        conn.close()
+        try:
+            conn = get_connection()
+            try:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "INSERT INTO atos (secao, subsecao, nome_lei, descricao_previa) VALUES (?, ?, ?, ?)",
+                    (secao, subsecao, nome_lei, descricao_previa),
+                )
+                conn.commit()
+            finally:
+                conn.close()
+        except Exception as e:
+            flash(f"Erro ao salvar ato: {e}", "erro")
+            return render_template("atos.html")
 
         flash("Ato salvo com sucesso.", "sucesso")
         return redirect(url_for("lei.atos"))
@@ -41,14 +46,19 @@ def nova_lei():
     numero = gerar_proximo_numero()
     if request.method == "POST":
         titulo = request.form.get("titulo", "").strip()
-        descricao = request.form.get("descricao", "").strip()
+        descricao = (request.form.get("descricao") or "").strip()
         data_lei = request.form.get("data_lei", "").strip()
 
         if not titulo or not data_lei:
             flash("Título e data da lei são obrigatórios.", "erro")
             return render_template("nova_lei.html", numero_lei=numero)
 
-        salvar_lei(numero, titulo, descricao, data_lei)
+        try:
+            salvar_lei(numero, titulo, descricao, data_lei)
+        except Exception as e:
+            flash(f"Erro ao salvar lei: {e}", "erro")
+            return render_template("nova_lei.html", numero_lei=numero)
+
         flash("Lei cadastrada com sucesso.", "sucesso")
         return redirect(url_for("lei.sucesso", numero=numero))
     return render_template("nova_lei.html", numero_lei=numero)

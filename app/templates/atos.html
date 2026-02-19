@@ -3,7 +3,7 @@
 {% block conteudo %}
 <h2 class="card-title">Atos oficiais</h2>
 
-<form method="post" id="form-atos">
+<form method="post" action="{{ url_for('lei.atos') }}" id="form-atos">
     <label for="secao">Seção</label>
     <select id="secao" name="secao" required>
         <option value="">Selecione...</option>
@@ -36,7 +36,7 @@
     </select>
 
     <label for="subsecao">Subseção</label>
-    <select id="subsecao" name="subsecao" required disabled>
+    <select id="subsecao" name="subsecao" disabled>
         <option value="">Selecione a seção primeiro...</option>
     </select>
 
@@ -269,6 +269,12 @@
         placeholder.textContent = "Selecione...";
         subsecaoSelect.appendChild(placeholder);
 
+        if (opcoes.length === 0) {
+            const opt = document.createElement("option");
+            opt.value = "Nenhuma subseção";
+            opt.textContent = "Nenhuma subseção";
+            subsecaoSelect.appendChild(opt);
+        }
         opcoes.forEach((nome) => {
             const opt = document.createElement("option");
             opt.value = nome;

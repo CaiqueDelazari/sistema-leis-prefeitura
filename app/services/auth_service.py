@@ -29,10 +29,14 @@ def senha_forte(senha: str) -> bool:
 
 
 def buscar_usuario_por_username(username: str) -> Optional[Dict[str, Any]]:
+    if not username or not str(username).strip():
+        return None
+    username = str(username).strip()
     conn = get_connection()
     cursor = conn.cursor()
+    # LOWER para não depender de maiúscula/minúscula
     cursor.execute(
-        "SELECT id, username, password_hash, is_admin FROM usuarios WHERE username = ?",
+        "SELECT id, username, password_hash, is_admin FROM usuarios WHERE LOWER(username) = LOWER(?)",
         (username,),
     )
     row = cursor.fetchone()

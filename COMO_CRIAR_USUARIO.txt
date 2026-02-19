@@ -1,0 +1,50 @@
+========================================
+  COMO CRIAR USUÁRIO (rodar localmente)
+========================================
+
+O sistema usa SQLite: tudo fica no arquivo "prefeitura.db" na pasta do projeto.
+Não precisa de PostgreSQL nem pgAdmin.
+
+--- Opção 1: Criar o usuário ADMIN (mais rápido) ---
+
+   No terminal, na pasta do projeto, rode:
+
+      python criar_admin.py
+
+   Isso cria um usuário com:
+   - Login: admin
+   - Senha: Admin@123
+
+   Depois acesse: http://127.0.0.1:5000/login
+
+--- Opção 2: Criar outro usuário (qualquer nome) ---
+
+   Rode:
+
+      python criar_usuario.py
+
+   O programa vai pedir:
+   - Nome de usuário
+   - Senha (mín. 8 caracteres, com maiúscula, minúscula, número e caractere especial)
+   - Confirmação da senha
+   - Se é administrador (s ou N)
+
+--- Ver usuários no banco ---
+
+   python listar_usuarios.py
+
+--- Ver leis e atos salvos ---
+
+   No terminal, na pasta do projeto, rode:
+
+      python listar_atos_e_leis.py
+
+   Mostra os últimos 20 atos e as últimas 20 leis cadastrados no banco.
+
+--- Subir o site ---
+
+   python run.py
+
+   Depois abra no navegador: http://127.0.0.1:5000
+
+========================================

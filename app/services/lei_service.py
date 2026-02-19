@@ -11,11 +11,12 @@ def gerar_proximo_numero():
 
 def salvar_lei(numero, titulo, descricao, data_lei):
     conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO leis (numero_lei, titulo, descricao, data_lei) VALUES (?, ?, ?, ?)",
-        (numero, titulo, descricao, data_lei)
-    )
-    conn.commit()
-    cursor.close()
-    conn.close()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO leis (numero_lei, titulo, descricao, data_lei) VALUES (?, ?, ?, ?)",
+            (numero, titulo, descricao, data_lei),
+        )
+        conn.commit()
+    finally:
+        conn.close()

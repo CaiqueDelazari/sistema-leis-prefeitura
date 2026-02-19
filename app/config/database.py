@@ -1,19 +1,23 @@
 import os
 import sqlite3
 
-# SQLite: arquivo na pasta do projeto (onde fica run.py)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DB_PATH = os.path.normpath(os.path.join(BASE_DIR, "prefeitura.db"))
+# Pasta do projeto: o banco fica aqui, arquivo único (SQLite local)
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DB_PATH = os.path.normpath(os.path.join(_PROJECT_ROOT, "prefeitura.db"))
 
 
 def get_connection():
+    """
+    Conexão com o banco SQLite local (arquivo prefeitura.db na pasta do projeto).
+    Tudo (usuários, atos, leis) é salvo nesse arquivo. Não precisa de pgAdmin nem PostgreSQL.
+    """
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
-    _criar_tabelas(conn)
+    _criar_tabelas_se_nao_existirem(conn)
     return conn
 
 
-def _criar_tabelas(conn):
+def _criar_tabelas_se_nao_existirem(conn):
     conn.executescript("""
         CREATE TABLE IF NOT EXISTS leis (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,7 +39,7 @@ def _criar_tabelas(conn):
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username VARCHAR(100) UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
-            is_admin BOOLEAN NOT NULL DEFAULT 0,
+            is_admin INTEGER NOT NULL DEFAULT 0,
             criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
     """)
