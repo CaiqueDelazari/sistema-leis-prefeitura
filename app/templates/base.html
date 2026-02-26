@@ -143,6 +143,9 @@
     <header class="topbar">
         <div class="topbar-title">
             Prefeitura de Agudos &mdash; Cadastro de Leis
+            {% if session.usuario_id %}
+            <a href="{{ url_for('lei.inicio') }}" style="margin-left: 12px; font-weight: normal;">Início</a>
+            {% endif %}
         </div>
         <div class="topbar-user">
             {% if session.usuario_id %}

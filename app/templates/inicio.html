@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<h2 class="card-title" style="margin-bottom: 24px;">O que deseja fazer?</h2>
+
+<div class="menu-opcoes">
+    <a href="{{ url_for('lei.adicionar') }}" class="menu-box">
+        <span class="menu-box-icon">➕</span>
+        <span class="menu-box-texto">Adicionar Lei</span>
+    </a>
+    <a href="{{ url_for('lei.procurar_lei') }}" class="menu-box">
+        <span class="menu-box-icon">🔍</span>
+        <span class="menu-box-texto">Procurar Lei</span>
+    </a>
+</div>
+
+<style>
+.menu-opcoes {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.menu-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 180px;
+    min-height: 140px;
+    padding: 24px;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #111827;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background 0.2s, border-color 0.2s;
+}
+.menu-box:hover {
+    background: #eff6ff;
+    border-color: #2563eb;
+    color: #1d4ed8;
+}
+.menu-box-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+.menu-box-texto {
+    text-align: center;
+}
+.link-discreto {
+    color: #6b7280;
+    text-decoration: none;
+    font-weight: normal;
+}
+.link-discreto:hover {
+    text-decoration: underline;
+}
+</style>
+{% endblock %}

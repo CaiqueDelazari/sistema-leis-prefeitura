@@ -18,7 +18,7 @@ def login():
             session["usuario_nome"] = usuario["username"]
             session["is_admin"] = bool(usuario.get("is_admin"))
             flash("Login realizado com sucesso.", "sucesso")
-            return redirect(url_for("lei.atos"))
+            return redirect(url_for("lei.inicio"))
 
         flash("Usuário ou senha inválidos.", "erro")
 
@@ -57,7 +57,7 @@ def admin_obrigatorio(view_func):
     def wrapper(*args, **kwargs):
         if not session.get("is_admin"):
             flash("Você não tem permissão para acessar esta página.", "erro")
-            return redirect(url_for("lei.atos"))
+            return redirect(url_for("lei.inicio"))
         return view_func(*args, **kwargs)
 
     return wrapper

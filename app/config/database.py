@@ -25,15 +25,18 @@ def _criar_tabelas_se_nao_existirem(conn):
             titulo TEXT NOT NULL,
             descricao TEXT,
             data_lei DATE NOT NULL,
-            data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            cadastrado_por TEXT
         );
         CREATE TABLE IF NOT EXISTS atos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            lei_id INTEGER REFERENCES leis(id),
             secao TEXT NOT NULL,
             subsecao TEXT NOT NULL,
             nome_lei TEXT NOT NULL,
             descricao_previa TEXT,
-            data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            cadastrado_por TEXT
         );
         CREATE TABLE IF NOT EXISTS usuarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,4 +46,15 @@ def _criar_tabelas_se_nao_existirem(conn):
             criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
     """)
+    # Migração: colunas adicionadas depois
+    cur = conn.cursor()
+    for tabela in ("leis", "atos"):
+        try:
+            cur.execute(f"ALTER TABLE {tabela} ADD COLUMN cadastrado_por TEXT")
+        except sqlite3.OperationalError:
+            pass
+    try:
+        cur.execute("ALTER TABLE atos ADD COLUMN lei_id INTEGER REFERENCES leis(id)")
+    except sqlite3.OperationalError:
+        pass
     conn.commit()

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<style>.main .card { max-width: 900px; }</style>
+<h2 class="card-title">Procurar Lei</h2>
+<p style="margin-bottom: 16px; font-size: 14px; color: #6b7280;">Preencha <strong>um ou mais</strong> campos para buscar. Nenhum campo é obrigatório.</p>
+
+<form method="post" class="form-busca">
+    <label for="data_lei">Data da lei</label>
+    <input id="data_lei" type="date" name="data_lei" value="{{ request.form.data_lei or '' }}">
+
+    <label for="cadastrado_por">Login de quem cadastrou</label>
+    <input id="cadastrado_por" type="text" name="cadastrado_por" placeholder="Ex.: admin" value="{{ request.form.cadastrado_por or '' }}">
+
+    <label for="titulo">Título</label>
+    <input id="titulo" type="text" name="titulo" placeholder="Parte do título" value="{{ request.form.titulo or '' }}">
+
+    <label for="nome_lei">Nome ou número da lei</label>
+    <input id="nome_lei" type="text" name="nome_lei" placeholder="Número ou texto" value="{{ request.form.nome_lei or '' }}">
+
+    <button type="submit">Buscar</button>
+</form>
+
+<p style="margin-top: 12px;"><a href="{{ url_for('lei.inicio') }}" class="btn btn-secondary">Voltar</a></p>
+
+{% if leis is defined and leis %}
+<hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;">
+<h3 style="font-size: 16px; margin-bottom: 12px;">Resultados ({{ leis|length }})</h3>
+<div class="tabela-wrapper">
+<table class="tabela-leis">
+    <thead>
+        <tr>
+            <th>Nº</th>
+            <th>Título</th>
+            <th>Data lei</th>
+            <th>Cadastrado em</th>
+            <th>Por</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lei in leis %}
+        <tr>
+            <td>{{ lei.numero_lei }}</td>
+            <td>{{ lei.titulo }}</td>
+            <td>{{ lei.data_lei }}</td>
+            <td>{{ lei.data_cadastro or '-' }}</td>
+            <td>{{ lei.cadastrado_por or '-' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% elif request.method == 'POST' %}
+<p style="margin-top: 16px; color: #6b7280;">Nenhuma lei encontrada com os filtros informados.</p>
+{% endif %}
+
+<style>
+.form-busca label { margin-top: 8px; }
+.form-busca label:first-of-type { margin-top: 0; }
+.tabela-wrapper { overflow-x: auto; margin-top: 8px; }
+.tabela-leis { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tabela-leis th, .tabela-leis td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+.tabela-leis th { background: #f3f4f6; font-weight: 600; color: #374151; }
+.tabela-leis tbody tr:hover { background: #f9fafb; }
+</style>
+{% endblock %}

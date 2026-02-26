@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<style>.main .card { max-width: 560px; }</style>
+
+<form method="post" action="{{ url_for('lei.adicionar') }}" id="form-adicionar">
+    <h2 class="card-title" style="margin-bottom: 16px;">Atos oficiais</h2>
+    <label for="secao">Seção</label>
+    <select id="secao" name="secao" required>
+        <option value="">Selecione...</option>
+        <option value="Atos oficiais">Atos oficiais</option>
+        <option value="Atos administrativos">Atos administrativos</option>
+        <option value="Licitações e Contratos">Licitações e Contratos</option>
+        <option value="Contas Públicas e Instrumentos de Gestão Fiscal">Contas Públicas e Instrumentos de Gestão Fiscal</option>
+        <option value="Concursos Públicos/Processos Seletivos">Concursos Públicos/Processos Seletivos</option>
+        <option value="Outros Atos">Outros Atos</option>
+        <option value="Atos de Pessoal">Atos de Pessoal</option>
+        <option value="Errata">Errata</option>
+        <option value="Advertências / Notificações">Advertências / Notificações</option>
+        <option value="Editais">Editais</option>
+        <option value="Comunicados">Comunicados</option>
+        <option value="Terceiro Setor">Terceiro Setor</option>
+        <option value="Atos normativos">Atos normativos</option>
+        <option value="Controladoria Geral do Município">Controladoria Geral do Município</option>
+        <option value="Convênios">Convênios</option>
+        <option value="Programas do Governo Federal e Estadual">Programas do Governo Federal e Estadual</option>
+        <option value="GABINETE DO PREFEITO">GABINETE DO PREFEITO</option>
+        <option value="LEGISLATIVO">LEGISLATIVO</option>
+        <option value="Defesa Civil">Defesa Civil</option>
+        <option value="Procuradoria-Geral do Município">Procuradoria-Geral do Município</option>
+        <option value="Educação">Educação</option>
+        <option value="ouvidoria">ouvidoria</option>
+        <option value="Controle Interno">Controle Interno</option>
+        <option value="Segurança Pública">Segurança Pública</option>
+        <option value="Advertências">Advertências</option>
+        <option value="Notificações">Notificações</option>
+    </select>
+    <label for="subsecao">Subseção</label>
+    <select id="subsecao" name="subsecao" disabled>
+        <option value="">Selecione a seção primeiro...</option>
+    </select>
+
+    <hr style="margin: 28px 0; border: none; border-top: 1px solid #e5e7eb;">
+
+    <h2 class="card-title">Nova lei</h2>
+    <label>Número da Lei</label>
+    <input type="text" value="{{ numero_lei }}" readonly>
+    <label for="titulo">Título</label>
+    <input id="titulo" type="text" name="titulo" required placeholder="Ex.: Lei de Diretrizes Orçamentárias">
+    <label for="descricao">Descrição (opcional)</label>
+    <textarea id="descricao" name="descricao" placeholder="Resumo da lei"></textarea>
+    <label for="data_lei">Data da Lei</label>
+    <input id="data_lei" type="date" name="data_lei" required>
+
+    <button type="submit" style="margin-top: 8px;">Salvar</button>
+</form>
+
+<p style="margin-top: 20px;"><a href="{{ url_for('lei.inicio') }}" class="btn btn-secondary">Voltar</a></p>
+
+<script>
+(function() {
+    const mapaSubsecoes = {
+        "Atos oficiais": ["Decretos", "Leis", "Outros atos oficiais", "Portarias", "Razões de veto", "Resoluções"],
+        "Atos administrativos": ["Concessão de aposentadoria", "Convênios", "Despacho", "Editais de notificação", "Licenciamento", "Outros atos administrativos", "Parecer", "Regimentos e deliberações"],
+        "Licitações e Contratos": ["Aditivos / Aditamentos / Supressões", "Apostilamentos", "Atas de Classificação", "Atas de registro de preço", "Atas de registro de preço - Trimestral", "Atas de Sessões", "Ato de Autorização de Contratação Direta", "Autorização de Contratação Direta", "Aviso de Contratação Direta", "Aviso de Licitação", "Aviso de Licitação - Retificação / Rerratificação", "Chamadas Públicas", "Chamamento Público", "Comunicados", "Concursos", "Contratos", "Contratos - Convocação", "Cotação", "Credenciamento", "Decisão do Prefeito", "Despacho de Julgamento", "Despachos", "Dispensas", "Dispensas - Aviso de Abertura", "Distratos", "Errata", "Extrato", "Homologação / Adjudicação", "Inexigibilidade", "Leilões", "Outros atos", "Plano de Contratação Anual - PCA", "Plano de Contratações Anual - PCA", "Prazo Recursal", "Pregão", "Prorrogações", "Ratificação", "Rescisão", "Revogação / Anulação", "Suspensão"],
+        "Contas Públicas e Instrumentos de Gestão Fiscal": ["Audiência Pública", "Balanços/balancetes", "Cargos e Salários", "Demonstrativo de Aplicação na Saúde", "Demonstrativo de Aplicação no Ensino", "Demonstrativo de Aplicação no FUNDEB", "Demonstrativos de receitas e despesas", "Notificação de Recursos Federais", "Orçamentos", "Outros atos", "Parecer prévio", "Plano Anual de Aplicação dos Recursos - PAAR", "Planos", "Prestação de contas", "Quebra de Ordem Cronológica", "Relação de compras", "Relação de contratos", "Relatório de Gestão Fiscal", "Relatório Resumido da Execução Orçamentária", "Tributos arrecadados"],
+        "Concursos Públicos/Processos Seletivos": ["Ato de Abertura", "Atribuição de Classe/Aulas", "Convocação", "Edital", "Edital - Classificação", "Edital - Nomeação", "Edital - Outros", "Edital - Retificação", "Edital - Suspensão", "Gabarito", "Homologação", "Outros atos de concurso/processo seletivo", "Recursos", "Resultados", "Termo de Desistência"],
+        "Outros Atos": ["Educação", "Outros Atos"],
+        "Atos de Pessoal": ["Aposentadoria", "Aproveitamento", "Demissão", "Despachos", "Exoneração", "Extrato de Acúmulo de Cargo", "Falecimento", "Nomeação", "Outros atos", "Portarias", "Promoção", "Readaptação", "Recondução", "Reintegração", "Subsídios e Remunerações", "Termo de Posse", "Transferência"],
+        "Errata": ["Errata", "Retificações"],
+        "Advertências / Notificações": ["Advertências", "Notificação da Liberação de Recursos do Governo Federal / Estadual", "Notificações"],
+        "Editais": ["Convocação de Convenção Partidária", "Editais", "Lei Aldir Blanc", "Lei Paulo Gustavo"],
+        "Comunicados": ["Comunicados"],
+        "Terceiro Setor": ["Balanços", "Chamamento Público", "Chamamento Público - Inexigibilidade", "Comunicados", "Credenciamento - Habilitação", "Edital", "Extrato - Contrato de Gestão", "Extrato - Termo Aditivo", "Extrato - Termo de Colaboração", "Extrato - Termo de Convênio", "Extrato - Termo de Fomento", "Extrato de Convênios", "Homologação", "Justificativa - Ausência de Chamamento Público", "Manifestação de Interesse Social", "Outros Atos", "Plano de Trabalho", "Qualificação - OS", "Termo Aditivo", "Termo de Colaboração", "Termo de Convênio", "Termo de Cooperação", "Termo de Fomento"],
+        "Atos normativos": ["Instrução Normativa"],
+        "Controladoria Geral do Município": [],
+        "Convênios": ["Extratos", "Outros Atos"],
+        "Programas do Governo Federal e Estadual": ["Bolsa do Povo - Programa Bolsa Trabalho"],
+        "GABINETE DO PREFEITO": [],
+        "LEGISLATIVO": [],
+        "Defesa Civil": [],
+        "Procuradoria-Geral do Município": ["Pareceres"],
+        "Educação": [],
+        "ouvidoria": ["Relatório Anual"],
+        "Controle Interno": ["Relatórios"],
+        "Segurança Pública": [],
+        "Advertências": [],
+        "Notificações": []
+    };
+    const secaoSelect = document.getElementById("secao");
+    const subsecaoSelect = document.getElementById("subsecao");
+    if (secaoSelect && subsecaoSelect) {
+        secaoSelect.addEventListener("change", function () {
+            const secao = this.value;
+            subsecaoSelect.innerHTML = "";
+            if (!secao || !(secao in mapaSubsecoes)) {
+                subsecaoSelect.disabled = true;
+                const opt = document.createElement("option");
+                opt.value = ""; opt.textContent = "Selecione a seção primeiro...";
+                subsecaoSelect.appendChild(opt);
+                return;
+            }
+            const opcoes = mapaSubsecoes[secao];
+            subsecaoSelect.disabled = false;
+            const ph = document.createElement("option");
+            ph.value = ""; ph.textContent = "Selecione...";
+            subsecaoSelect.appendChild(ph);
+            if (opcoes.length === 0) {
+                const o = document.createElement("option");
+                o.value = "Nenhuma subseção"; o.textContent = "Nenhuma subseção";
+                subsecaoSelect.appendChild(o);
+            }
+            opcoes.forEach(function(nome) {
+                const o = document.createElement("option");
+                o.value = nome; o.textContent = nome;
+                subsecaoSelect.appendChild(o);
+            });
+        });
+    }
+})();
+</script>
+{% endblock %}

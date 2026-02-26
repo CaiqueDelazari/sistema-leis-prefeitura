@@ -17,7 +17,7 @@ def create_app():
     @app.route("/", methods=["GET", "POST"])
     def index():
         if session.get("usuario_id"):
-            return redirect(url_for("lei.atos"))
+            return redirect(url_for("lei.inicio"))
         if request.method == "POST":
             username = (request.form.get("username") or "").strip()
             senha = request.form.get("password") or ""
@@ -27,7 +27,7 @@ def create_app():
                 session["usuario_nome"] = usuario["username"]
                 session["is_admin"] = bool(usuario.get("is_admin"))
                 flash("Login realizado com sucesso.", "sucesso")
-                return redirect(url_for("lei.atos"))
+                return redirect(url_for("lei.inicio"))
             flash("Usuário ou senha inválidos.", "erro")
         return render_template("login.html")
 
